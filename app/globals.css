@@ -1,26 +1,68 @@
 @import "tailwindcss";
+@import "@fontsource/geist/400.css";
+@import "@fontsource/geist/500.css";
+@import "@fontsource/geist/600.css";
+@import "@fontsource/geist/700.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@config "../tailwind.config.ts";
 
-@theme inline {
+/* Design tokens — brand (static) + semantic (dark-mode-aware) */
+@theme {
+  --color-primary: #0D1B2A;
+  --color-accent: #2563EB;
+  --color-surface: #F8FAFC;
+  --color-muted: #64748B;
+  --color-border: #E2E8F0;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 20px 3px rgba(37, 99, 235, 0.1); }
+  50%       { box-shadow: 0 0 36px 10px rgba(37, 99, 235, 0.22); }
+}
+
+@utility animate-glow-pulse {
+  animation: glow-pulse 2.8s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(0.8); }
+  50%       { transform: scale(1.2); }
+}
+
+@utility animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+/* Semantic tokens — swap values in dark mode */
+:root {
+  --background: #F8FAFC;
+  --foreground: #0D1B2A;
+  --dot-color: rgba(13, 27, 42, 0.07);
+}
+
+.dark {
+  --background: #0D1B2A;
+  --foreground: #F8FAFC;
+  --dot-color: rgba(248, 250, 252, 0.05);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
+  background-size: 24px 24px;
 }
