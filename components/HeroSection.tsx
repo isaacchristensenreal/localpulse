@@ -38,10 +38,10 @@ const AVATARS = [
 
 const inputBaseClass =
   "h-14 w-full rounded-xl border bg-white/80 px-5 text-base text-primary sm:w-52 " +
-  "placeholder:text-muted backdrop-blur-sm outline-none transition-colors animate-glow-pulse"
+  "placeholder:text-muted backdrop-blur-sm outline-none transition-colors"
 
-const inputOkClass = inputBaseClass + " border-border focus:border-accent"
-const inputErrClass = inputBaseClass + " border-red-400 focus:border-red-400"
+const inputOkClass = inputBaseClass + " border-border focus:border-accent focus:ring-2 focus:ring-accent/20"
+const inputErrClass = inputBaseClass + " border-red-400 focus:border-red-400 focus:ring-2 focus:ring-red-400/20"
 
 export function HeroSection() {
   const router = useRouter()
@@ -69,30 +69,10 @@ export function HeroSection() {
 
   return (
     <section className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-24 text-center">
-      {/* Background blobs */}
+      {/* Background blobs — static, no animation, zero GPU overhead */}
       <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <motion.div
-          className="absolute left-1/4 top-1/4 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/15 blur-[120px]"
-          animate={{
-            rotate: [0, 360],
-            scale: [0.9, 1.1, 0.9],
-          }}
-          transition={{
-            rotate: { duration: 20, repeat: Infinity, ease: "linear" },
-            scale: { duration: 8, repeat: Infinity, ease: "easeInOut" },
-          }}
-        />
-        <motion.div
-          className="absolute bottom-1/3 right-1/4 h-[560px] w-[400px] translate-x-1/2 rounded-full bg-primary/10 blur-[140px]"
-          animate={{
-            rotate: [360, 0],
-            scale: [1.1, 0.9, 1.1],
-          }}
-          transition={{
-            rotate: { duration: 25, repeat: Infinity, ease: "linear" },
-            scale: { duration: 10, repeat: Infinity, ease: "easeInOut" },
-          }}
-        />
+        <div className="absolute left-1/4 top-1/4 h-[480px] w-[480px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent/15 blur-[120px]" />
+        <div className="absolute bottom-1/3 right-1/4 h-[560px] w-[400px] translate-x-1/2 rounded-full bg-primary/10 blur-[140px]" />
       </div>
 
       {/* Shimmer pill badge */}
