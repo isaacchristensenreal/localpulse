@@ -7,13 +7,13 @@ export async function ResultsFeed({ location }: { location: ZipLocation }) {
   const { data, error } = await supabase
     .from("updates")
     .select(
-      "id, title, category, plain_summary, personal_impact, source_url, level, state_code, published_at, bill_number, bill_status, sponsor, sponsor_party, sponsor_state, vote_result, committee",
+      "id, title, category, plain_summary, personal_impact, source_url, level, published_at, bill_number, bill_status, sponsor, sponsor_party, sponsor_state, vote_result",
     )
     .or(
       `zip_codes_affected.cs.{${location.zipcode}},state_code.eq.${location.stateAbbr}`,
     )
     .order("published_at", { ascending: false })
-    .limit(20)
+    .limit(10)
 
   if (error) {
     console.error("[ResultsFeed] supabase error:", error.message)
@@ -34,7 +34,7 @@ export async function ResultsFeed({ location }: { location: ZipLocation }) {
     vote_result: row.vote_result ?? null,
     source_url: row.source_url,
     published_at: row.published_at,
-    committee: row.committee ?? null,
+    committee: null,
   }))
 
   if (results.length === 0) {

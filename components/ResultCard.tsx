@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { memo, useState } from "react"
 import Link from "next/link"
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion"
 import { ChevronDown, ExternalLink, Copy } from "lucide-react"
@@ -133,7 +133,7 @@ interface ResultCardProps {
   zipcode?: string
 }
 
-export function ResultCard({ result, index, zipcode }: ResultCardProps) {
+export const ResultCard = memo(function ResultCard({ result, index, zipcode }: ResultCardProps) {
   const [actionOpen, setActionOpen] = useState(false)
 
   const {
@@ -358,4 +358,4 @@ export function ResultCard({ result, index, zipcode }: ResultCardProps) {
       </Card>
     </motion.div>
   )
-}
+})

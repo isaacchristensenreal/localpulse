@@ -1,8 +1,8 @@
 "use client"
 
+import { useRef, useState } from "react"
 import { motion } from "framer-motion"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
 
 const headline = "What's happening in your neighborhood?"
 const words = headline.split(" ")
@@ -36,17 +36,32 @@ const AVATARS = [
   { bg: "bg-violet-400", initial: "S" },
 ]
 
+const inputBaseClass =
+  "h-14 w-full rounded-xl border bg-white/80 px-5 text-base text-primary sm:w-52 " +
+  "placeholder:text-muted backdrop-blur-sm outline-none transition-colors animate-glow-pulse"
+
+const inputOkClass = inputBaseClass + " border-border focus:border-accent"
+const inputErrClass = inputBaseClass + " border-red-400 focus:border-red-400"
+
 export function HeroSection() {
   const router = useRouter()
-  const [zip, setZip] = useState("")
+  const zipRef = useRef<HTMLInputElement>(null)
   const [error, setError] = useState(false)
+
+  function handleInput(e: React.FormEvent<HTMLInputElement>) {
+    const input = e.currentTarget
+    const clean = input.value.replace(/\D/g, "").slice(0, 5)
+    if (input.value !== clean) input.value = clean
+    // Only trigger a re-render when clearing an existing error
+    if (error) setError(false)
+  }
 
   function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault()
-    const trimmed = zip.trim()
-    if (/^\d{5}$/.test(trimmed)) {
+    const value = zipRef.current?.value.trim() ?? ""
+    if (/^\d{5}$/.test(value)) {
       setError(false)
-      router.push(`/zip/${trimmed}`)
+      router.push(`/zip/${value}`)
     } else {
       setError(true)
     }
@@ -87,8 +102,10 @@ export function HeroSection() {
         transition={{ duration: 0.4, ease: "easeOut" }}
         className="mb-5"
       >
-        <div className="relative overflow-hidden rounded-full border border-accent/30 px-4 py-1.5"
-          style={{ background: "rgba(37,99,235,0.08)" }}>
+        <div
+          className="relative overflow-hidden rounded-full border border-accent/30 px-4 py-1.5"
+          style={{ background: "rgba(37,99,235,0.08)" }}
+        >
           <span className="relative z-10 text-xs font-semibold tracking-wide text-accent">
             Free · No signup required
           </span>
@@ -139,28 +156,21 @@ export function HeroSection() {
         transition={{ type: "spring", stiffness: 260, damping: 26, delay: 0.65 }}
         className="w-full max-w-md"
       >
-        <form onSubmit={handleSubmit} className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center"
+        >
           <input
+            ref={zipRef}
             id="zip-input"
             type="text"
             inputMode="numeric"
             maxLength={5}
-            value={zip}
-            onChange={(e) => {
-              setError(false)
-              setZip(e.target.value.replace(/\D/g, ""))
-            }}
+            onInput={handleInput}
             placeholder="Enter ZIP code"
             aria-label="ZIP code"
             aria-invalid={error}
-            className={[
-              "h-14 w-full rounded-xl border bg-white/80 px-5 text-base text-primary sm:w-52",
-              "placeholder:text-muted backdrop-blur-sm outline-none transition-colors",
-              "animate-glow-pulse",
-              error
-                ? "border-red-400 focus:border-red-400"
-                : "border-border focus:border-accent",
-            ].join(" ")}
+            className={error ? inputErrClass : inputOkClass}
           />
           <button
             type="submit"
@@ -171,7 +181,9 @@ export function HeroSection() {
         </form>
 
         {error && (
-          <p className="mt-2 text-sm text-red-500">Please enter a valid 5-digit ZIP code.</p>
+          <p className="mt-2 text-sm text-red-500">
+            Please enter a valid 5-digit ZIP code.
+          </p>
         )}
 
         {/* Social proof */}
